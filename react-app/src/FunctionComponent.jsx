@@ -5,7 +5,7 @@ export default function FunctionComponent(props) {
 
     const componentDidMount = () => {
         console.log('componentDidMount');
-        setState({number: 0});
+        setState({ number: 0 });
     }
     const componentDidUnMount = () => console.log('componentDidUnMount');
     const componentDidUpdate = (prevProps, prevState) => {
@@ -24,12 +24,16 @@ export default function FunctionComponent(props) {
             console.warn(e);
         }
     }
-    const handleIncClick = () => setState(prevState=>({...prevState, number: prevState.number+1}));
+    const handleIncClick = () => setState(prevState => ({ ...prevState, number: prevState.number + 1 }));
 
     useEffect(() => {
         componentDidMount();
         return componentDidUnMount
     }, [])
+
+    useEffect(() => {
+        componentDidUpdate(props, state);
+    }, [props, state])
 
     return (
         <div className="card">
