@@ -19,20 +19,59 @@ app.get('/ftp-list', async (req, res) => {
             port: '21',
             user: 'tester',
             password: 'password',
-        })
+        });
         await ftpClient.cd('/');
         const fileList = await ftpClient.list();
         ftpClient.close();
         responseBody.data = fileList;
-    } catch(e) {
+    } catch (e) {
         statusCode = 404;
         responseBody.error = e;
     }
-   
+
+    res.status(statusCode).json(responseBody);
+});
+
+app.get('/ftp-file-content', async (req, res) => {
+    let statusCode = 200;
+    let responseBody = {
+        data: null,
+        error: null
+    }
+    try {
+        const { fileName } = req.body;
+
+        const ftpClient = new Client();
+        await ftpClient.access({
+            host: '192.168.56.1',
+            port: '21',
+            user: 'tester',
+            password: 'password',
+        });
+        await ftpClient.cd('/');
+
+        const chunks = [];
+        await ftpClient.downloadTo(
+            new require('stream').Writable({
+                write(chunk, _, callback) {
+                    chunks.push(chunk);
+                    callback();
+                }
+            }), fileName
+        )
+        console.log('chunks', chunks);
+
+        ftpClient.close();
+        responseBody.data = fileList;
+    } catch (e) {
+        statusCode = 404;
+        responseBody.error = e;
+    }
+
     res.status(statusCode).json(responseBody);
 });
 
 const port = 3333;
 app.listen(port, () => {
     console.log('Backend server starts on port', port);
-})
+});
