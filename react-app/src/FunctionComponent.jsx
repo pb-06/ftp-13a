@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function FunctionComponent(props) {
     const [state, setState] = useState(({})); // this.setState(({}))
+
+    let prevProps = useRef();
+    let prevState = useRef();
 
     const componentDidMount = () => {
         console.log('componentDidMount');
@@ -32,7 +35,9 @@ export default function FunctionComponent(props) {
     }, [])
 
     useEffect(() => {
-        componentDidUpdate(props, state);
+        componentDidUpdate(prevProps.current, prevState.current);
+        prevProps.current = props;
+        prevState.current = state;
     }, [props, state])
 
     return (
