@@ -28,6 +28,7 @@ export default function FunctionComponent(props) {
 
     useEffect(() => {
         componentDidMount();
+        return componentDidUnMount
     }, [])
 
     return (
